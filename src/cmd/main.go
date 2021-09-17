@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
-	"time"
 
+	"github.com/turnage/graw"
 	"github.com/turnage/graw/reddit"
 )
 
@@ -13,15 +13,12 @@ type movieBot struct {
 }
 
 func (r *movieBot) Post(p *reddit.Post) error {
-	if strings.Contains(p.SelfText, "testing movie") {
-		<-time.After(10 * time.Second)
-		return r.bot.SendMessage(
-			p.Author,
-			fmt.Sprintf("Reminder: %s", p.Title),
-			"You've Been reminded!",
-		)
+	if strings.Contains(p.Title, "movie") {
+		fmt.Printf("[%s] posted [%s]\n", p.Author, p.Title)
+		return nil
+	} else {
+		return nil
 	}
-	return nil
 }
 
 func main() {
@@ -30,15 +27,14 @@ func main() {
 	if err != nil {
 		fmt.Println("Failed to create bot handle: ", err)
 		return
-
 	}
 
-	harvest, err := bot.Listing("/r/golang", "")
-	if err != nil {
-		fmt.Println("Failed to getch /r/golang: ", err)
-		return
+	cfg := graw.Config{Subreddits: []string{"askreddit"}}
+	handler := &movieBot{bot: bot}
+	if _, wait, err := graw.Run(handler, bot, cfg); err != nil {
+		fmt.Println("Failed to start graw run: ", err)
+	} else {
+		fmt.Println("graw run failed: ", wait())
 	}
-	for _, post := range harvest.Posts[:5] {
-		fmt.Printf("[%s] posted [%s]\n", post.Author, post.Title)
-	}
+
 }
