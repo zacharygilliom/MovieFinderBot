@@ -22,7 +22,7 @@ func (r *movieBot) Post(p *reddit.Post) error {
 }
 
 func main() {
-	bot, err := reddit.NewBotFromAgentFile("/home/zach/goProjects/MovieFinder/src/config/moviefinder.agent", 0)
+	bot, err := reddit.NewBotFromAgentFile("../config/moviefinder.agent", 0)
 
 	if err != nil {
 		fmt.Println("Failed to create bot handle: ", err)
