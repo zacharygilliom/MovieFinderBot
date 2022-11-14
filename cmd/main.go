@@ -14,6 +14,11 @@ type movieBot struct {
 
 func (r *movieBot) Post(p *reddit.Post) error {
 	if strings.Contains(p.Title, "movie") {
+		var comms []*reddit.Comment
+		comms = p.Replies
+		for _, comm := range comms {
+			fmt.Print(comm)
+		}
 		fmt.Printf("[%s] posted [%s]\n", p.Author, p.Title)
 		return nil
 	} else {
